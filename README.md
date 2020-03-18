@@ -1,1 +1,1 @@
-# Shapes-Corona-SDK-Lua-
+# Shapes-Corona-SDK-Lua
