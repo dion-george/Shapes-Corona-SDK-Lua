@@ -5,7 +5,7 @@ function M.new(params, colors)
 	local instance = display.newGroup();
 	local circleGroup = display.newGroup();
 	local multiple = display.pixelWidth/display.contentWidth;
-	local inputRadius = params.radius;
+	local inputRadius = params.style.height/2;
 	local radius = inputRadius * multiple;
 	local diameter = radius * 2;
 	local partition = params.partition;
@@ -111,37 +111,9 @@ function M.new(params, colors)
 		polygon.x = (minPoints[2*i-1] + maxPoints[2*i-1])/2;
 		polygon.y = (minPoints[2*i] + maxPoints[2*i])/2;
 		polygon:setFillColor(unpack(colors.shapeColor));
-		polygon.strokeWidth = 2;
+		polygon.strokeWidth = 2*multiple;
 		polygon:setStrokeColor(unpack(colors.strokeColor))
 		table.insert(shadedList, polygon);
-	end
-
-	local function sequentialHighlight()
-		for i = 1, shaded do
-			shadedList[i]:setFillColor(unpack(colors.shadedColor));
-		end
-	end
-
-	local function alternateHighlight()
-		local j = 1;
-		for i = 1, partition do
-			if i % 2 == 1 and j <= shaded then
-				shadedList[i]:setFillColor(unpack(colors.shadedColor));
-				j = j + 1;
-			end
-		end
-	end
-
-	local function randomHighlight()
-		local partitionList = {};
-		for i = 1, partition do
-			table.insert(partitionList,i);
-		end
-		for i = 1, shaded do
-			i = partitionList[math.random(#partitionList)]; 
-			table.remove(partitionList, table.indexOf(partitionList, i));
-			shadedList[i]:setFillColor(unpack(colors.shadedColor));
-		end
 	end
 
 	local snapshot = display.newSnapshot(multiple * diameter, multiple * diameter);
@@ -149,12 +121,8 @@ function M.new(params, colors)
 	snapshot.xScale = 1/multiple;
 	snapshot.yScale = 1/multiple;
 
-	if arrangement == 1 then
-		sequentialHighlight();
-	elseif arrangement == 2 then
-		alternateHighlight();
-	elseif arrangement == 3 then
-		randomHighlight();
+	for i = 1, #shaded do
+		shadedList[shaded[i]]:setFillColor(unpack(colors.shadedColor));
 	end
 
 	instance:insert(snapshot);

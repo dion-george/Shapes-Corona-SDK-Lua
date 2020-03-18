@@ -11,8 +11,8 @@ function M.new(params, colors)
 	local arrangement = params.arrangement;
 	local vertices, rowValues, columnValues, shadedPoints = {}, {}, {}, {};
 	local polygon, strokePolygon, line, shadedPolygon;
-	local width = params.width;
-	local height = params.height;
+	local width = params.style.width;
+	local height = params.style.height;
 	local widthFactor = width / columns;
 	local heightFactor = height / rows;
 
@@ -54,65 +54,15 @@ function M.new(params, colors)
 		shadedPolygon:setFillColor(unpack(colors.shadedColor));
 	end
 
-	local function sequentialHighlight()
-		local var1 = 1;
-		for i = 1, #rowValues - 1 do
-			for j = 1, #columnValues - 1 do
-				if var1 <= shaded then
-					drawPolygon(i, j);
-					var1 = var1 + 1;	
-				end
-			end
+	local RC = {};
+	for i = 1, rows do
+		for j =1, columns do
+			table.insert(RC, {i, j});
 		end
 	end
 
-	local function alternateHighlight()
-		local var1 = 1;
-		local flag = 1;
-		for i = 1, #rowValues - 1 do
-			flag = flag == 1 and 0 or 1;
-			for j = 1, #columnValues - 1 do
-				if var1 <= shaded and j % 2 == flag then
-					drawPolygon(i, j); 
-					var1 = var1 + 1;
-				end
-			end
-		end
-	end
-
-	local function RCList(R, C)
-		local RC = {};
-		for i = 1, R do
-			for j =1, C do
-				table.insert(RC, {i, j});
-			end
-		end
-		return RC;
-	end
-
-	local function randomHighlight()
-		local RC = {};
-		local partitionList = {};
-		local randomNumber, R, C;
-		RC = RCList(rows, columns);
-		for j = 1, #RC do
-			table.insert(partitionList, j);
-		end	
-		for i = 1, shaded do
-			randomNumber = partitionList[math.random(#partitionList)]; 
-			table.remove(partitionList, table.indexOf(partitionList, randomNumber));
-			R = RC[randomNumber][1];
-			C = RC[randomNumber][2];
-			drawPolygon(R, C);		
-		end
-	end
-
-	if arrangement == 1 then
-		sequentialHighlight();
-	elseif arrangement == 2 then
-		alternateHighlight();
-	elseif arrangement == 3 then
-		randomHighlight();
+	for i = 1, #shaded do
+		drawPolygon(RC[shaded[i]][1], RC[shaded[i]][2]);
 	end
 
 	instance:insert(polygonGroup);

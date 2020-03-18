@@ -5,7 +5,7 @@ function M.new(params, colors)
 	local instance = display.newGroup();
 	local polygonGroup = display.newGroup();
 	local lineGroup = display.newGroup();
-	local radius = params.radius;
+	local radius = params.style.height/2;
 	local sides = 8;
 	local partition = params.partition;
 	local shaded = params.shaded;
@@ -79,40 +79,8 @@ function M.new(params, colors)
 
 	end
 	
-	local function sequentialHighlight()
-		for i = 1, shaded do
-			drawPolygon(i);
-		end
-	end
-
-	local function alternateHighlight()
-		local j = 1;
-		for i = 1, partition do
-			if i%2 == 1 and j <= shaded then
-				drawPolygon(i);
-				j = j + 1;
-			end
-		end
-	end
-
-	local function randomHighlight()
-		local partitionList = {};
-		for i = 1, partition do
-			table.insert(partitionList,i);
-		end
-		for i = 1, shaded do
-			i = partitionList[math.random(#partitionList)]; 
-			table.remove(partitionList, table.indexOf(partitionList, i));
-			drawPolygon(i);
-		end
-	end
-
-	if arrangement == 1 then
-		sequentialHighlight();
-	elseif arrangement == 2 then
-		alternateHighlight();
-	elseif arrangement == 3 then
-		randomHighlight();
+	for i = 1, #shaded do
+		drawPolygon(shaded[i]);
 	end
 
 	instance:insert(polygonGroup);

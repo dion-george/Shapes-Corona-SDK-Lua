@@ -5,7 +5,7 @@ function M.new(params, colors)
 	local instance = display.newGroup();
 	local polygonGroup = display.newGroup();
 	local lineGroup = display.newGroup();
-	local radius = params.radius;
+	local radius = params.style.height/1.901;
 	local sides = 7;
 	local partition = params.partition;
 	local shaded = params.shaded;
@@ -15,6 +15,8 @@ function M.new(params, colors)
 	local pointX, pointY;
 	local vertices, linePoints, shadedPoints, shadedCenter = {}, {}, {}, {};
 	local polygon, strokePolygon, line, shadedPolygon;
+
+	local circle1 = display.newCircle(polygonGroup, 0, 0, radius);
 
 	for i = 1, sides do	
 		theta = math.rad(degrees);
@@ -92,45 +94,15 @@ function M.new(params, colors)
 		shadedPolygon:setFillColor(unpack(colors.shadedColor));
 	end
 
-	local function sequentialHighlight()
-		for i = 1, shaded do
-			drawPolygon(i);
-		end
-	end
-
-	local function alternateHighlight()
-		local j = 1;
-		for i = 1, partition do
-			if i % 2 == 1 and j <= shaded then
-				 drawPolygon(i);
-				j = j + 1;
-			end
-		end
-	end
-
-	local function randomHighlight()
-		local partitionList = {};
-		for i = 1, partition do
-			table.insert(partitionList, i);
-		end
-
-		for i = 1, shaded do
-			i = partitionList[math.random(#partitionList)]; 
-			table.remove(partitionList, table.indexOf(partitionList, i));
-			 drawPolygon(i);
-		end
+	for i = 1, #shaded do
+		drawPolygon(shaded[i]);
 	end
 
 	instance:insert(polygonGroup);
 	instance:insert(lineGroup);
-
-	if arrangement == 1 then
-		sequentialHighlight();
-	elseif arrangement == 2 then
-		alternateHighlight();
-	elseif arrangement == 3 then
-		randomHighlight();
-	end
+	polygonGroup.x = params.style.height/2 - radius;
+	lineGroup.x = params.style.height/2 - radius;
+	instance:rotate(-90);
 
 	return instance;
 end

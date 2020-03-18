@@ -9,15 +9,15 @@ local CCY = display.contentHeight * 0.5;
 local shapes;
 
 local params = {
-	shape = 'hexagon',
-	radius = 100,
-	width = 250,
+	shape = 'rectangle',
 	rows = 3,
 	columns = 4,
-	height = 200,
-	partition = 6,
-	shaded = 2,
-	arrangement = 3
+	partition = 8,
+	shaded = {5,3,2},
+	style = {
+		width = 100,
+		height = 200
+	}
 }
 
 local colors = {
@@ -31,7 +31,6 @@ function scene:show()
     shapes = Shapes.new(params,colors);
 	shapes.x = CCX;
 	shapes.y = CCY;
-
 end
 
 scene:addEventListener("show", scene);
