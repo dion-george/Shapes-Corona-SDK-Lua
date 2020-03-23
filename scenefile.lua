@@ -9,10 +9,10 @@ local CCY = display.contentHeight * 0.5;
 local shapes;
 
 local params = {
-	shape = 'octagon',
+	shape = 'rectangle',
 	rows = 3,
 	columns = 4,
-	partition = 8,
+	partition = {6,2},
 	shaded = {5,3,2},
 	style = {
 		width = 100,
@@ -31,6 +31,8 @@ function scene:show()
     shapes = Shapes.new(params,colors);
 	shapes.x = CCX;
 	shapes.y = CCY;
+	local temp ={5,2};
+	print("value is " ..temp[1]);
 end
 
 scene:addEventListener("show", scene);

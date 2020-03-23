@@ -7,7 +7,7 @@ function M.new(params, colors)
 	local lineGroup = display.newGroup();
 	local radius = params.style.height / 2;
 	local sides = 8;
-	local partition = params.partition;
+	local partition = params.partition[1];
 	local shaded = params.shaded;
 	local arrangement = params.arrangement;
 	local degrees = 0;

@@ -7,7 +7,7 @@ function M.new(params, colors)
 	local lineGroup = display.newGroup();
 	local radius = params.style.height/1.901;
 	local sides = 7;
-	local partition = params.partition;
+	local partition = params.partition[1];
 	local shaded = params.shaded;
 	local arrangement = params.arrangement;
 	local degrees = 0;
@@ -17,7 +17,7 @@ function M.new(params, colors)
 	local polygon, strokePolygon, line, shadedPolygon;
 
 	local function strokes(elem)
-		elem:setStrokeColor(unpack(style.strokeColor));
+		elem:setStrokeColor(unpack(colors.strokeColor));
 		elem.strokeWidth = 2;
 	end
 

@@ -5,8 +5,8 @@ function M.new(params, colors)
 	local instance = display.newGroup();
 	local polygonGroup = display.newGroup();
 	local lineGroup = display.newGroup();
-	local rows = params.rows;
-	local columns = params.columns;
+	local rows = params.partition[1];
+	local columns = params.partition[2];
 	local shaded = params.shaded;
 	local arrangement = params.arrangement;
 	local vertices, rowValues, columnValues, shadedPoints = {}, {}, {}, {};

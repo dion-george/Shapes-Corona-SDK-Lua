@@ -8,7 +8,7 @@ function M.new(params, colors)
 	local inputRadius = params.style.height / 2;
 	local radius = inputRadius * multiple;
 	local diameter = radius * 2;
-	local partition = params.partition;
+	local partition = params.partition[1];
 	local shaded = params.shaded;
 	local arrangement = params.arrangement;
 	local lastPoints, minPoints, maxPoints, shadedList = {}, {}, {}, {};
