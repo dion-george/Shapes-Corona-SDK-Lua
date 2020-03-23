@@ -16,7 +16,11 @@ function M.new(params, colors)
 	local vertices, linePoints, shadedPoints, shadedCenter = {}, {}, {}, {};
 	local polygon, strokePolygon, line, shadedPolygon;
 
-	local circle1 = display.newCircle(polygonGroup, 0, 0, radius);
+	local function strokes(elem)
+		elem:setStrokeColor(unpack(style.strokeColor));
+		elem.strokeWidth = 2;
+	end
+
 	for i = 1, sides do	
 		theta = math.rad(degrees);
 		table.insert(vertices, radius * math.cos(theta));
@@ -31,8 +35,7 @@ function M.new(params, colors)
 	strokePolygon = display.newPolygon(lineGroup, 0, 0, vertices);
 	strokePolygon.x = (radius * 2 - strokePolygon.width) / 2;
 	strokePolygon:setFillColor(0, 0, 0, 0);
-	strokePolygon:setStrokeColor(unpack(colors.strokeColor));
-	strokePolygon.strokeWidth = 2;
+	strokes(strokePolygon);
 
 	degrees = 0;
 
@@ -48,8 +51,7 @@ function M.new(params, colors)
 		table.insert(linePoints, pointX);
 		table.insert(linePoints, pointY);
 		line = display.newLine(lineGroup, 0, 0, linePoints[2 * i - 1], linePoints[2 * i]);
-		line:setStrokeColor(1, 0, 0, 1);
-		line.strokeWidth = 2;
+		strokes(line);
 		degrees = degrees + 360 / partition;
 	end
 
@@ -101,12 +103,6 @@ function M.new(params, colors)
 		end
 			shadedPolygon = display.newPolygon(polygonGroup, shadedCenter[1], shadedCenter[2], shadedPoints);
 			shadedPolygon:setFillColor(unpack(colors.shadedColor));
-	end
-
-	local function sequentialHighlight()
-		for i = 1, shaded do
-			drawPolygon(i);
-		end
 	end
 
 	for i = 1, #shaded do

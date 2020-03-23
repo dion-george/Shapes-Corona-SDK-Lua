@@ -22,10 +22,10 @@ function M.new(params, colors)
 	end
 
 	vertices = { - width / 2, - height / 2, width / 2, - height / 2, width / 2, height / 2, - width / 2, height / 2};
-	polygon = display.newPolygon(polygonGroup, 0, 0, vertices );
+	polygon = display.newPolygon(polygonGroup, 0, 0, vertices);
 	polygon:setFillColor(unpack(colors.shapeColor));
 	strokePolygon = display.newPolygon(lineGroup, 0, 0, vertices);
-	strokePolygon:setFillColor(0, 0, 0, 0 );
+	strokePolygon:setFillColor(0, 0, 0, 0);
 	strokes(strokePolygon);
 	table.insert(columnValues, - width / 2);
 	table.insert(rowValues, - height / 2);

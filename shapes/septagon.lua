@@ -16,7 +16,10 @@ function M.new(params, colors)
 	local vertices, linePoints, shadedPoints, shadedCenter = {}, {}, {}, {};
 	local polygon, strokePolygon, line, shadedPolygon;
 
-	local circle1 = display.newCircle(polygonGroup, 0, 0, radius);
+	local function strokes(elem)
+		elem:setStrokeColor(unpack(style.strokeColor));
+		elem.strokeWidth = 2;
+	end
 
 	for i = 1, sides do	
 		theta = math.rad(degrees);
@@ -32,8 +35,7 @@ function M.new(params, colors)
 	strokePolygon = display.newPolygon(lineGroup, 0, 0, vertices);
 	strokePolygon.x = (2 * radius - strokePolygon.width) / 2;
 	strokePolygon:setFillColor(0, 0, 0, 0);
-	strokePolygon:setStrokeColor(unpack(colors.strokeColor));
-	strokePolygon.strokeWidth = 2;
+	strokes(strokePolygon);
 
 	degrees = 0;
 
@@ -50,9 +52,7 @@ function M.new(params, colors)
 		table.insert(linePoints, pointX);
 		table.insert(linePoints, pointY);
 		line = display.newLine(lineGroup, 0, 0, linePoints[2 * i - 1], linePoints[2 * i]);
-		line:setStrokeColor(1, 0, 0, 1);
-		line.strokeWidth = 2;
-
+		strokes(line);
 		degrees = degrees + 360 / partition;
 
 	end

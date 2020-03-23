@@ -7,7 +7,6 @@ local Star = require('shapes.star');
 local Triangle = require('shapes.triangle');
 local Rectangle = require('shapes.rectangle');
 
-
 local M = {};
 
 function M.new(params, colors)

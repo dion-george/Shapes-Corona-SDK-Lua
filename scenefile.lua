@@ -9,7 +9,7 @@ local CCY = display.contentHeight * 0.5;
 local shapes;
 
 local params = {
-	shape = 'rectangle',
+	shape = 'octagon',
 	rows = 3,
 	columns = 4,
 	partition = 8,

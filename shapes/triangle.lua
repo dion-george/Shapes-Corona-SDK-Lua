@@ -24,7 +24,6 @@ function M.new(params, colors)
 		elem:setStrokeColor(unpack(colors.strokeColor));
 		elem.strokeWidth = 2;
 	end
-	local circle1 = display.newCircle(polygonGroup, 0, 0, radius);
 
 	for i = 1, sides do	
 		theta = math.rad(degrees);
