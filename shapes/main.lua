@@ -10,22 +10,21 @@ local Rectangle = require('shapes.rectangle');
 local M = {};
 
 function M.new(params, colors)
-
-	if params.shape == "hexagon" then
+	if params.name == "hexagon" then
 		return Hexagon.new(params, colors);
-	elseif params.shape == "circle" then
+	elseif params.name == "circle" then
 		return Circle.new(params, colors);
-	elseif params.shape == "octagon" then
+	elseif params.name == "octagon" then
 		return Octagon.new(params, colors);
-	elseif params.shape == "pentagon" then
+	elseif params.name == "pentagon" then
 		return Pentagon.new(params, colors);
-	elseif params.shape == "septagon" then
+	elseif params.name == "septagon" then
 		return Septagon.new(params, colors);
-	elseif params.shape == "star" then
+	elseif params.name == "star" then
 		return Star.new(params, colors);
-	elseif params.shape == "triangle" then
+	elseif params.name == "triangle" then
 		return Triangle.new(params, colors);
-	elseif params.shape == "rectangle" then
+	elseif (params.name == "rectangle" or params.name == "square") then
 		return Rectangle.new(params, colors);
 	end
 end

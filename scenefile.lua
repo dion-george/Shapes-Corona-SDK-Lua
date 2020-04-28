@@ -9,30 +9,24 @@ local CCY = display.contentHeight * 0.5;
 local shapes;
 
 local params = {
-	shape = 'rectangle',
-	rows = 3,
-	columns = 4,
-	partition = {6,2},
-	shaded = {5,3,2},
-	style = {
-		width = 100,
-		height = 200
-	}
+	name = 'star',
+	fractions = {10},
+	shaded = {2, 6, 8, 1},
+  width = 350,
+  height = 350,
+  strokes = false
 }
 
 local colors = {
 	shapeColor = {1, 1, 1, 1},
 	shadedColor = {0, 1, 1, 1},
 	strokeColor = {1, 0, 0, 1},
-
 }
 
 function scene:show()
-    shapes = Shapes.new(params,colors);
+  shapes = Shapes.new(params,colors);
 	shapes.x = CCX;
 	shapes.y = CCY;
-	local temp ={5,2};
-	print("value is " ..temp[1]);
 end
 
 scene:addEventListener("show", scene);

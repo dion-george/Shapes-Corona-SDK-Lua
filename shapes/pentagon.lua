@@ -5,9 +5,10 @@ function M.new(params, colors)
 	local instance = display.newGroup();
 	local polygonGroup = display.newGroup();
 	local lineGroup = display.newGroup();
-	local radius = (1 - 0.4472) * params.style.height;
+	local height = params.height;
+	local radius = (1 - 0.4472) * height;
 	local sides = 5;
-	local partition = params.partition[1];
+	local fractions = params.fractions[1];
 	local shaded = params.shaded;
 	local arrangement = params.arrangement;
 	local degrees = 0;
@@ -15,10 +16,16 @@ function M.new(params, colors)
 	local pointX, pointY, shadedCenterX, shadedCenterY;
 	local vertices, linePoints, shadedPoints, shadedCenter = {}, {}, {}, {};
 	local polygon, strokePolygon, line, shadedPolygon;
+  local strokes;
+  if params.strokes == false then
+    strokes = false;
+  else
+    strokes = true;
+  end
 
-	local function strokes(elem)
+	local function strokeColor(elem)
 		elem:setStrokeColor(unpack(colors.strokeColor));
-		elem.strokeWidth = 2;
+		elem.strokeWidth = 1;
 	end
 
 	for i = 1, sides do	
@@ -28,20 +35,28 @@ function M.new(params, colors)
 		degrees = degrees + 360 / sides;
 	end
 
-	polygon = display.newPolygon(polygonGroup, 0, 0, vertices);
+	polygon = display.newPolygon(
+    polygonGroup, 
+    0, 0, 
+    vertices
+  );
 	polygon.x = (radius * 2 - polygon.width) / 2;
 	polygon:setFillColor(unpack(colors.shapeColor));
 
-	strokePolygon = display.newPolygon(lineGroup, 0, 0, vertices);
+	strokePolygon = display.newPolygon(
+    lineGroup, 
+    0, 0, 
+    vertices
+  );
 	strokePolygon.x = (radius * 2 - strokePolygon.width) / 2;
 	strokePolygon:setFillColor(0, 0, 0, 0);
-	strokes(strokePolygon);
+	strokeColor(strokePolygon);
 
 	degrees = 0;
 
-	for i = 1, partition do	
+	for i = 1, fractions do	
 		theta = math.rad(degrees);
-		if i % 2 == 1 or partition == 5 then
+		if i % 2 == 1 or fractions == 5 then
 			pointX = radius * math.cos(theta);
 			pointY = radius * math.sin(theta);
 		else
@@ -49,10 +64,16 @@ function M.new(params, colors)
 			pointY = ((math.sqrt(3) / 2 * radius) - 0.055 * radius) * math.sin(theta);
 		end
 		table.insert(linePoints, pointX);
-		table.insert(linePoints, pointY);
-		line = display.newLine(lineGroup, 0, 0, linePoints[2 * i - 1], linePoints[2 * i]);
-		strokes(line);
-		degrees = degrees + 360 / partition;
+    table.insert(linePoints, pointY);
+    if strokes then
+      line = display.newLine(
+        lineGroup, 
+        0, 0, 
+        linePoints[2 * i - 1], linePoints[2 * i]
+      );
+      strokeColor(line);
+    end
+		degrees = degrees + 360 / fractions;
 	end
 
 	table.insert(linePoints, linePoints[1]);
@@ -60,8 +81,12 @@ function M.new(params, colors)
 
 	local function drawPolygon(i)
 
-		if partition == 10 then
-			shadedPoints = {linePoints[2 * i - 1], linePoints[2 * i], 0, 0, linePoints[2 * (i + 1) - 1], linePoints[2 * (i + 1)]};
+		if fractions == 10 then
+			shadedPoints = {
+        linePoints[2 * i - 1], linePoints[2 * i], 
+        0, 0, 
+        linePoints[2 * (i + 1) - 1], linePoints[2 * (i + 1)]
+      };
 			if i == 1 or i == 2 or i == 5 or i == 6 or i == 7 or i == 8 then
 				shadedCenterX = (shadedPoints[1] + shadedPoints[3]) / 2;
 				shadedCenterY = (shadedPoints[4] + shadedPoints[6]) / 2;
@@ -79,29 +104,68 @@ function M.new(params, colors)
 				end
 			end
 			shadedCenter = {shadedCenterX, shadedCenterY};
-		elseif partition == 5 then	
-			shadedPoints = {linePoints[2 * i - 1], linePoints[2 * i], 0, 0, linePoints[2 * (i + 1) - 1], linePoints[2 * (i + 1)]};		
+		elseif fractions == 5 then	
+			shadedPoints = {
+        linePoints[2 * i - 1], linePoints[2 * i], 
+        0, 0, 
+        linePoints[2 * (i + 1) - 1], linePoints[2 * (i + 1)]
+      };		
 			if i == 1 then
-				shadedCenter = {(shadedPoints[1] + shadedPoints[3]) / 2, (shadedPoints[2] + shadedPoints[6]) / 2};
+				shadedCenter = {
+          (shadedPoints[1] + shadedPoints[3]) / 2, 
+          (shadedPoints[2] + shadedPoints[6]) / 2
+        };
 			elseif i == 2 then
-				shadedCenter = {(shadedPoints[1] + shadedPoints[5]) / 2, (shadedPoints[2] + shadedPoints[4]) / 2};
+				shadedCenter = {
+          (shadedPoints[1] + shadedPoints[5]) / 2, 
+          (shadedPoints[2] + shadedPoints[4]) / 2
+        };
 			elseif i == 3 then
-				shadedCenter = {(shadedPoints[1] + shadedPoints[3]) / 2, (shadedPoints[2] + shadedPoints[6]) / 2};
+				shadedCenter = {
+          (shadedPoints[1] + shadedPoints[3]) / 2, 
+          (shadedPoints[2] + shadedPoints[6]) / 2
+        };
 			elseif i == 4 then
-				shadedCenter = {(shadedPoints[1] + shadedPoints[5]) / 2, (shadedPoints[4] + shadedPoints[6]) / 2};
+				shadedCenter = {
+          (shadedPoints[1] + shadedPoints[5]) / 2, 
+          (shadedPoints[4] + shadedPoints[6]) / 2
+        };
 			elseif i == 5 then
-				shadedCenter = {(shadedPoints[3] + shadedPoints[5]) / 2, (shadedPoints[2] + shadedPoints[6]) / 2};
+				shadedCenter = {
+          (shadedPoints[3] + shadedPoints[5]) / 2, 
+          (shadedPoints[2] + shadedPoints[6]) / 2
+        };
 			end
-		elseif partition == 2 then
+		elseif fractions == 2 then
 			if i == 1 then
-				shadedPoints = {linePoints[2 * i - 1], linePoints[2 * i],vertices[2 * (i + 1) - 1], vertices[2 * (i + 1)], vertices[2 * (i + 2) - 1], vertices[2 * (i + 2)],linePoints[2 * (i + 1) - 1], linePoints[2 * (i + 1)]};
-				shadedCenter = {(shadedPoints[1] + shadedPoints[7]) / 2, (shadedPoints[2] + shadedPoints[4]) / 2};
+				shadedPoints = {
+          linePoints[2 * i - 1], linePoints[2 * i],
+          vertices[2 * (i + 1) - 1], vertices[2 * (i + 1)], 
+          vertices[2 * (i + 2) - 1], vertices[2 * (i + 2)],
+          linePoints[2 * (i + 1) - 1], linePoints[2 * (i + 1)]
+        };
+				shadedCenter = {
+          (shadedPoints[1] + shadedPoints[7]) / 2, 
+          (shadedPoints[2] + shadedPoints[4]) / 2
+        };
 			elseif i == 2 then
-				shadedPoints = {linePoints[2 * i - 1], linePoints[2 * i],vertices[4 * i - 1], vertices[4 * i], vertices[5 * i - 1], vertices[5 * i], linePoints[2 * i - 3], linePoints[2 * i - 2]};
-				shadedCenter = {(shadedPoints[1] + shadedPoints[7]) / 2, (shadedPoints[2] + shadedPoints[6]) / 2};
+				shadedPoints = {
+          linePoints[2 * i - 1], linePoints[2 * i],
+          vertices[4 * i - 1], vertices[4 * i], 
+          vertices[5 * i - 1], vertices[5 * i], 
+          linePoints[2 * i - 3], linePoints[2 * i - 2]
+        };
+				shadedCenter = {
+          (shadedPoints[1] + shadedPoints[7]) / 2, 
+          (shadedPoints[2] + shadedPoints[6]) / 2
+        };
 			end
 		end
-			shadedPolygon = display.newPolygon(polygonGroup, shadedCenter[1], shadedCenter[2], shadedPoints);
+			shadedPolygon = display.newPolygon(
+        polygonGroup, 
+        shadedCenter[1], shadedCenter[2], 
+        shadedPoints
+      );
 			shadedPolygon:setFillColor(unpack(colors.shadedColor));
 	end
 
@@ -111,8 +175,8 @@ function M.new(params, colors)
 
 	instance:insert(polygonGroup);
 	instance:insert(lineGroup);
-	polygonGroup.x = params.style.height/2 - radius;
-	lineGroup.x = params.style.height/2 - radius;
+	polygonGroup.x = height / 2 - radius;
+	lineGroup.x = height / 2 - radius;
 	instance:rotate(-90);
 
 	return instance;

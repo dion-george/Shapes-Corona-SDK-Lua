@@ -5,19 +5,25 @@ function M.new(params, colors)
 	local instance = display.newGroup();
 	local circleGroup = display.newGroup();
 	local multiple = display.pixelWidth / display.contentWidth;
-	local inputRadius = params.style.height / 2;
+	local inputRadius = params.height / 2;
 	local radius = inputRadius * multiple;
 	local diameter = radius * 2;
-	local partition = params.partition[1];
+	local fractions = params.fractions[1];
 	local shaded = params.shaded;
 	local arrangement = params.arrangement;
 	local lastPoints, minPoints, maxPoints, shadedList = {}, {}, {}, {};
 	local minX, maxX, minY, maxY;
 	local rotateToGlobal;
-	local polygon;
-	local realAngle = 360 / partition;
-	local angle = math.floor(360 / partition);
+	local polygon, circleOutline;
+	local realAngle = 360 / fractions;
+	local angle = math.floor(360 / fractions);
 	local difference = math.floor((realAngle - angle) * 100);
+  local strokes;
+  if params.strokes == false then
+    strokes = false;
+  else
+    strokes = true;
+  end
 
 	local function semiCircle(angle, x, y)
 
@@ -44,7 +50,7 @@ function M.new(params, colors)
 			end
 		end
 
-		local center, first, angle = {x=0, y=0}, {x = x, y = y}, angle;
+		local center, first, angle = {x = 0, y = 0}, {x = x, y = y}, angle;
 		rotateToGlobal = rotateTo;
 		local points = {};
 		points[#points + 1] = 0;
@@ -65,9 +71,9 @@ function M.new(params, colors)
 			maxY = first.y;
 		end
 		
-		local point = {x=first.x, y= first.y};
+		local point = {x = first.x, y = first.y};
 
-		for i=1, angle do
+		for i = 1, angle do
 			point = rotateToGlobal(point, 1, center);
 			points[#points + 1] = point.x;
 			points[#points + 1] = point.y;
@@ -105,17 +111,31 @@ function M.new(params, colors)
 	table.insert(lastPoints, 0);
 	table.insert(lastPoints, - radius);
 
-	for i = 1, partition do
-		local polygon = display.newPolygon(circleGroup, 0, 0, semiCircle(angle, lastPoints[2 * i - 1], lastPoints[2 * i]));
+	for i = 1, fractions do
+		polygon = display.newPolygon(
+      circleGroup, 
+      0, 0, 
+      semiCircle(angle, lastPoints[2 * i - 1], lastPoints[2 * i])
+    );
 		polygon.x = (minPoints[2 * i - 1] + maxPoints[2 * i - 1]) / 2;
 		polygon.y = (minPoints[2 * i] + maxPoints[2 * i]) / 2;
-		polygon:setFillColor(unpack(colors.shapeColor));
-		polygon.strokeWidth = 2 * multiple;
-		polygon:setStrokeColor(unpack(colors.strokeColor))
+    polygon:setFillColor(unpack(colors.shapeColor));
+    if strokes then
+      polygon.strokeWidth = 1 * multiple;
+      polygon:setStrokeColor(unpack(colors.strokeColor))
+    end
 		table.insert(shadedList, polygon);
-	end
-
-	local snapshot = display.newSnapshot(multiple * diameter, multiple * diameter);
+  end
+  if strokes == false then
+    circleOutline = display.newCircle(circleGroup, 0, 0, radius)
+    circleOutline:setFillColor(1, 1, 1, 0);
+    circleOutline.strokeWidth = 1 * multiple;
+    circleOutline:setStrokeColor(unpack(colors.strokeColor))
+  end
+	local snapshot = display.newSnapshot(
+    multiple * params.height + 2 * multiple, 
+    multiple * params.height + 2 * multiple
+  );
 	snapshot.group:insert(circleGroup);
 	snapshot.xScale = 1 / multiple;
 	snapshot.yScale = 1 / multiple;
